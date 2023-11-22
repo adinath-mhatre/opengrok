@@ -72,6 +72,10 @@ RUN apt-get install --no-install-recommends -y pkg-config automake build-essenti
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# prepare a virtual environment
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
 # prepare OpenGrok binaries and directories
 # hadolint ignore=DL3010
 COPY --from=build opengrok.tar.gz /opengrok.tar.gz
