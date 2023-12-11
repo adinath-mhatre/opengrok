@@ -44,6 +44,15 @@ RUN /mvn/mvnw help:evaluate -Dexpression=project.version -q -DforceStdout > /mvn
 FROM tomcat:10.1.13-jdk17
 LABEL maintainer="https://github.com/oracle/opengrok"
 
+# add our scripts and configuration
+COPY docker /scripts
+RUN chmod -R +x /scripts
+
+# install root certificate if exists
+RUN cp /scripts/*.crt /usr/local/share/ca-certificates 2> /dev/null || true
+RUN apt-get update && apt-get install ca-certificates
+RUN update-ca-certificates
+
 # Add Perforce apt source.
 # hadolint ignore=DL3008,DL3009
 RUN apt-get update && \
@@ -106,10 +115,6 @@ ENV JAVA_OPTS="--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED --add-export
 # disable all file logging
 COPY docker/logging.properties /usr/local/tomcat/conf/logging.properties
 RUN sed -i -e 's/Valve/Disabled/' /usr/local/tomcat/conf/server.xml
-
-# add our scripts and configuration
-COPY docker /scripts
-RUN chmod -R +x /scripts
 
 # run
 WORKDIR $CATALINA_HOME
