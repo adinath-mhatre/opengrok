@@ -86,6 +86,7 @@ OPENGROK_JAR = os.path.join(OPENGROK_LIB_DIR, "opengrok.jar")
 
 NOMIRROR_ENV_NAME = "NOMIRROR"
 API_TIMEOUT_ENV_NAME = "API_TIMEOUT"
+MAX_HEAP_SIZE_ENV_NAME = "MAX_HEAP_SIZE"
 
 expected_token = None
 periodic_timer = None
@@ -551,6 +552,12 @@ def main():
         logger.info(f"API timeout set to {api_timeout} seconds")
     else:
         os.environ[API_TIMEOUT_ENV_NAME] = str(api_timeout)
+
+    max_heap_size = 8
+    if not os.environ.get(MAX_HEAP_SIZE_ENV_NAME):
+        os.environ[MAX_HEAP_SIZE_ENV_NAME] = str(max_heap_size)
+    else:
+        logger.info(f"Maximun heap size set to {max_heap_size}G")
 
     env = {}
     extra_indexer_options = os.environ.get("INDEXER_OPT", "")
