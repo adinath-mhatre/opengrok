@@ -46,6 +46,7 @@ LABEL maintainer="https://github.com/oracle/opengrok"
 
 # add our scripts and configuration
 COPY docker /scripts
+RUN mv /scripts/server.xml /usr/local/tomcat/conf
 RUN chmod -R +x /scripts
 
 # install root certificate if exists
